@@ -1,0 +1,13 @@
+ID,Title,Acceptance,Difficulty,Frequency,Leetcode Question Link
+381,Insert Delete GetRandom O(1) - Duplicates allowed,34.1%,Hard,0.10584435094403895, https://leetcode.com/problems/insert-delete-getrandom-o1-duplicates-allowed
+ this is also done this is not to easy but yeah little bit tricky
+
+380,Insert Delete GetRandom O(1),47.5%,Medium,0.057001980519332376, https://leetcode.com/problems/insert-delete-getrandom-o1
+this is not a Difficulty Question this is one of the simple question i ever saw just use unordered map and a vector to store values and solve it 
+49,Group Anagrams,56.9%,Medium,0.008159610094625805, https://leetcode.com/problems/group-anagrams
+this is also very simple questio use just map and sort , store the value 
+42,Trapping Rain Water,48.9%,Hard,0.00411947029523883, https://leetcode.com/problems/trapping-rain-water
+this is not easy it is a hard question but i did this multiple time so i have a clear idea how to solve it 
+just take 2 array ,one is for prefix and one for sufix and after that itrate array and min(prefix[i],sufix[i])-nums(i) return ans;
+322,Coin Change,35.5%,Medium,0.003863246064215582, https://leetcode.com/problems/coin-change
+this is also a good question if you use simple recusion then you solve it into 5-10 min but dp logic is little bit tricky

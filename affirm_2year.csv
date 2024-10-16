@@ -1,0 +1,285 @@
+ID,Title,Acceptance,Difficulty,Frequency,Leetcode Question Link
+736,Parse Lisp Expression,47.5%,Hard,0.7290367865107017, https://leetcode.com/problems/parse-lisp-expression
+381,Insert Delete GetRandom O(1) - Duplicates allowed,34.1%,Hard,0.49586980740929654, https://leetcode.com/problems/insert-delete-getrandom-o1-duplicates-allowed
+class RandomizedCollection {
+   unordered_map<int,unordered_set<int>> mp;
+    vector<int> ans;
+public:
+    RandomizedCollection() {
+        
+    }
+    
+    bool insert(int val) {
+        ans.push_back(val);
+        mp[val].insert(ans.size()-1);
+        return mp[val].size()<=1;
+      
+
+        
+    }
+    
+    bool remove(int val) {
+        if(mp[val].size()==0) return false;
+        int idx=*mp[val].begin();
+        mp[val].erase(idx);
+        int num=ans.back();
+        swap(ans[idx],ans[ans.size()-1]);
+        mp[num].insert(idx);
+        mp[num].erase(ans.size()-1);
+        ans.pop_back();
+        return true;
+
+        
+    }
+    
+    int getRandom() {
+        return ans[rand()%ans.size()];
+        
+    }
+};
+
+/**
+ * Your RandomizedCollection object will be instantiated and called as such:
+ * RandomizedCollection* obj = new RandomizedCollection();
+ * bool param_1 = obj->insert(val);
+ * bool param_2 = obj->remove(val);
+ * int param_3 = obj->getRandom();
+ */
+695,Max Area of Island,62.7%,Medium,0.31425595727716876, https://leetcode.com/problems/max-area-of-island
+class Solution {
+public:
+    int maxAreaOfIsland(vector<vector<int>>& grid) {
+        int rows = grid.size();
+        int cols = grid[0].size();
+        int result = 0;
+        
+        int dirr[] = {-1, 0, 1, 0};  // row movement (up, down)
+        int dirc[] = {0, -1, 0, 1};  // column movement (left, right)
+        
+        // Iterate through every cell in the grid
+        for(int i = 0; i < rows; i++) {
+            for(int j = 0; j < cols; j++) {
+                if(grid[i][j] == 1) {  // We found an unvisited island cell
+                    queue<pair<int, int>> q;
+                    q.push({i, j});
+                    grid[i][j] = 0;  // Mark this cell as visited
+                    int cnt = 0;  // To track the area of the island
+                    
+                    // Perform BFS to calculate the area of this island
+                    while(!q.empty()) {
+                        auto p = q.front();
+                        q.pop();
+                        cnt++;  // Increase island area for this cell
+                        
+                        // Explore all 4 directions (up, down, left, right)
+                        for(int d = 0; d < 4; d++) {
+                            int x = p.first + dirr[d];
+                            int y = p.second + dirc[d];
+                            
+                            // Check bounds and if the next cell is part of the island
+                            if(x >= 0 && x < rows && y >= 0 && y < cols && grid[x][y] == 1) {
+                                q.push({x, y});
+                                grid[x][y] = 0;  // Mark it as visited
+                            }
+                        }
+                    }
+                    
+                    // Update the maximum island size
+                    result = max(result, cnt);
+                }
+            }
+        }
+        
+        return result;
+    }
+};
+
+380,Insert Delete GetRandom O(1),47.5%,Medium,0.08108897817576358, https://leetcode.com/problems/insert-delete-getrandom-o1
+class RandomizedSet {
+    unordered_map<int,int> mp;
+    vector<int> ans;
+
+
+public:
+    RandomizedSet() {
+        
+    }
+    
+    bool insert(int val) {
+     if(mp.find(val)!=mp.end()) return false;
+    mp[val]=ans.size();
+     ans.push_back(val);
+     return true;
+        
+    }
+    
+    bool remove(int val) {
+        if(mp.find(val)==mp.end()) return false;
+         int index=mp[val];
+        int lastNumber=ans.back();
+        ans[index]=lastNumber;
+        mp[lastNumber]=index;
+        mp.erase(val);
+        return true;
+        
+    }
+    
+    int getRandom() {
+        int random=rand()%ans.size();
+        return ans[random];
+        
+    }
+};
+
+/**
+ * Your RandomizedSet object will be instantiated and called as such:
+ * RandomizedSet* obj = new RandomizedSet();
+ * bool param_1 = obj->insert(val);
+ * bool param_2 = obj->remove(val);
+ * int param_3 = obj->getRandom();
+ */
+49,Group Anagrams,56.9%,Medium,0.05662724563684648, https://leetcode.com/problems/group-anagrams
+class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& str) {
+        int n=str.size();
+        unordered_map<string,vector<string>> mp;
+        vector<vector<string>> ans1;
+        for(auto st:str)
+        {
+            string t=st;
+            sort(t.begin(),t.end());
+             mp[t].push_back(st);
+        }
+        for(auto m:mp){
+            ans1.push_back(m.second);
+        }
+        return ans1;
+    }
+};
+
+/*
+aet=3
+ant=2
+abt=1
+*/
+200,Number of Islands,46.8%,Medium,0.033359117749874545, https://leetcode.com/problems/number-of-islands
+class Solution {
+public:
+    int numIslands(vector<vector<char>>& grid) {
+        int n=grid.size();
+        int m=grid[0].size();
+        int ans=0;
+        vector<vector<int>> vis(n,vector<int>(m,0));
+        int delr[]={-1,0,1,0};
+        int delc[]={0,1,0,-1};
+        
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(grid[i][j]=='1' && vis[i][j]==0){
+                    ans++;
+                    vis[i][j]=1;
+                    queue<pair<int,int>> q;
+                    q.push({i,j});
+                    while(!q.empty()){
+                        int r=q.front().first;
+                        int c=q.front().second;
+                        q.pop();
+                        for(int i=0; i<4; i++){
+                            int row=r+delr[i];
+                            int col=c+delc[i];
+                            if(row>=0 && row<n && col>=0 && col<m && vis[row][col]!=1 && grid[row][col]!='0'){
+                                vis[row][col]=1;
+                                q.push({row,col});
+                            }
+                        }
+                    }
+                }
+            }
+        }
+     return ans;
+
+    }
+};
+362,Design Hit Counter,63.7%,Medium,0.024317307650706343, https://leetcode.com/problems/design-hit-counter
+322,Coin Change,35.5%,Medium,0.008671409957551127, https://leetcode.com/problems/coin-change
+230,Kth Smallest Element in a BST,60.2%,Medium,0.006085520073802784, https://leetcode.com/problems/kth-smallest-element-in-a-bst
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+int cnt=0;
+int result=-1;
+  void solve(TreeNode* root,int k){
+    if(root==nullptr) return;
+
+    solve(root->left,k);
+    cnt++;
+    if(cnt==k) {result=root->val;}
+
+    solve(root->right,k);
+
+  }
+    int kthSmallest(TreeNode* root, int k) {
+     solve(root,k);
+     return result;
+    }
+};
+127,Word Ladder,29.6%,Medium,0.005731495844689608, https://leetcode.com/problems/word-ladder
+42,Trapping Rain Water,48.9%,Hard,0.00411947029523883, https://leetcode.com/problems/trapping-rain-water
+class Solution {
+public:
+ 
+    int trap(vector<int>& nums) {
+      int n=nums.size();
+      int prefix[n];
+      int sufix[n];
+      prefix[0]=nums[0];
+      for(int i=1; i<n; i++){
+        prefix[i]=max(prefix[i-1],nums[i]);
+      }
+      sufix[n-1]=nums[n-1];
+      for(int i=n-2; i>=0 ; i--){
+        sufix[i]=max(sufix[i+1],nums[i]);
+      }
+      int waterContain=0;
+      for(int i=0; i<n; i++){
+        waterContain+=(min(prefix[i],sufix[i])-nums[i]);
+      }
+      return waterContain;
+    
+    }
+};
+// 0 1 0 2 1 0 1 3 2 1 2 1 
+// left right 
+// min(left,right) 
+1,Two Sum,45.6%,Easy,0.003139596786381058, https://leetcode.com/problems/two-sum
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> mp; // Map to store number and its index
+        for (int i = 0; i < nums.size(); i++) {
+            // Calculate the complement needed to reach the target
+            int second = target - nums[i];
+            // Check if the complement exists in the map
+            if (mp.find(second) != mp.end()) {
+                // If found, return the indices of the two numbers
+                return {mp[second], i};
+            }
+            // Store the current number and its index in the map
+            mp[nums[i]] = i;
+        }
+        return {}; // Return an empty vector if no solution is found
+    }
+    
+};
