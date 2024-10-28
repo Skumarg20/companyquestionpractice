@@ -2,21 +2,405 @@ ID,Title,Acceptance,Difficulty,Frequency,Leetcode Question Link
 755,Pour Water,43.3%,Medium,1.6549959634129805, https://leetcode.com/problems/pour-water
 1166,Design File System,56.8%,Medium,1.578042968988746, https://leetcode.com/problems/design-file-system
 336,Palindrome Pairs,33.7%,Hard,1.3086247857193076, https://leetcode.com/problems/palindrome-pairs
+this is hard level problem so it will take time 
 166,Fraction to Recurring Decimal,21.6%,Medium,1.110416810228655, https://leetcode.com/problems/fraction-to-recurring-decimal
+this is not a easy Question and not a Difficulty one how have just basic understanding of fraction
+class Solution {
+public:
+    string fractionToDecimal(int numerator, int denominator) {
+  string ans="";
+   unordered_map<long long,int>mp;
+     if ((numerator < 0) ^ (denominator < 0)) {
+            ans += "-";
+        }
+      long long num = abs((long long)numerator);
+        long long denom = abs((long long)denominator);
+        long long remainder = num % denom;
+   if(numerator==0) return "0";
+   long long dividend=num/denom;
+  ans+=to_string(dividend);
+  if(remainder==0) return ans;
+   
+   ans+=".";
+   while(remainder!=0){
+    if(mp.find(remainder)!=mp.end()){
+        ans.insert(mp[remainder],"(");
+        ans+=")";
+        break; 
+    }
+    mp[remainder]=ans.size();
+    remainder*=10;
+    ans+=to_string(remainder/denom);
+    remainder%=denom;
+
+   }
+      return ans;  
+    }
+};
 875,Koko Eating Bananas,52.1%,Medium,0.8409986269592165, https://leetcode.com/problems/koko-eating-bananas
+this is a very easy question for me because i solved this question multiple time
+class Solution {
+public:
+    bool solve(vector<int>& piles,int h,int mid){
+       int time=0;
+       for(auto x:piles){
+        if((x%mid)!=0){
+            time+=(x/mid)+1;
+        }
+        else{
+            time+=(x/mid);
+        }
+
+       }
+        if(time<=h) return true;
+        else return false;
+    }
+    int minEatingSpeed(vector<int>& piles, int h) {
+        int mini=*min_element(piles.begin(),piles.end());
+        int maxi=*max_element(piles.begin(),piles.end());
+        while(mini<maxi){
+            int mid=(mini+maxi)/2;
+            if(solve(piles,h,mid)==true){
+                maxi=mid;
+            }
+            else{
+                mini=mid+1;
+            }
+
+        }
+        
+        return mini;
+    }
+};
 773,Sliding Puzzle,59.3%,Hard,0.6810258200276005, https://leetcode.com/problems/sliding-puzzle
+this question is not easy it will take to understanding
 864,Shortest Path to Get All Keys,40.1%,Hard,0.6061358035703156, https://leetcode.com/problems/shortest-path-to-get-all-keys
 787,Cheapest Flights Within K Stops,39.3%,Medium,0.5212226928497461, https://leetcode.com/problems/cheapest-flights-within-k-stops
+this is not a difficult question if you did all standerd question of graph the you can do it 
+class Solution {
+public:
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+         vector<vector<pair<int,int>>>adj(n);
+        for(auto it:flights){
+           adj[it[0]].push_back({it[1],it[2]});
+
+        }
+      vector<int> price(n,INT_MAX);
+      price[src]=0;
+      queue<pair<int,pair<int,int>>> q;
+      q.push({0,{src,0}});
+      while(!q.empty()){
+        int stop=q.front().first;
+        int node =q.front().second.first;
+        int cost=q.front().second.second;
+        q.pop();
+        if(stop>k){
+            continue;
+        }
+        for(auto it:adj[node]){
+            if(stop<=k && cost+it.second<price[it.first]){
+                price[it.first]=cost+it.second;
+                q.push({stop+1,{it.first,it.second+cost}});
+            }
+        }
+       
+
+      }
+       if(price[dst]==INT_MAX) return -1;
+        return price[dst];
+    }
+};
 269,Alien Dictionary,33.3%,Hard,0.48723106280473205, https://leetcode.com/problems/alien-dictionary
+  private: 
+    vector<int> topoSort(int V, vector<int> adj[]) {
+        vector<int> ans;
+        vector<int> indegree(V, 0); // use 'indegree' instead of 'index' for clarity
+        
+        // Calculate indegree of each vertex
+        for(int i = 0; i < V; i++) {
+            for(auto neighbor : adj[i]) {
+                indegree[neighbor]++;
+            }
+        }
+        
+        // Queue to store nodes with 0 indegree
+        queue<int> q;
+        for(int i = 0; i < V; i++) {
+            if(indegree[i] == 0) q.push(i);
+        }
+        
+        // Perform Topological Sort
+        while(!q.empty()) {
+            int node = q.front();
+            q.pop();
+            ans.push_back(node);
+            for(auto neighbor : adj[node]) {
+                indegree[neighbor]--;
+                if(indegree[neighbor] == 0) q.push(neighbor);
+            }
+        }
+        
+        return ans;
+    }
+    
+  public:
+    string findOrder(string dict[], int n, int k) {
+       vector<int> adj[k];
+       
+       // Build graph from the given dictionary
+       for(int i = 1; i < n; i++) {
+           string s1 = dict[i - 1];
+           string s2 = dict[i];
+           int len = min(s1.length(), s2.length());
+           
+           for(int j = 0; j < len; j++) {
+               if(s1[j] != s2[j]) {
+                   adj[s1[j] - 'a'].push_back(s2[j] - 'a');
+                   break;
+               }
+           }
+       }
+       
+       vector<int> topoOrder = topoSort(k, adj);
+       string result = "";
+       
+       // Convert topological order to string result
+       for(auto x : topoOrder) {
+           result += char(x + 'a');
+       }
+       
+       return result;
+    }
+
+    this is not easy and not difficult type of question,
 251,Flatten 2D Vector,45.7%,Medium,0.4808790962829651, https://leetcode.com/problems/flatten-2d-vector
+class Flatten2D {
+    private: 
+    int i=0,j=0;
+    vector<vector<int>> vec;
+    void forward(){
+        while(i<vec.size() && j>=vec[i].size()){
+            i++;
+            j=0;
+        }
+    }
+            
+   public:
+    Flatten2D(vector<vector<int>>& array2d) {
+         this->vec=move(array2d);
+    }
+
+    int next() {
+        forward();
+        return vec[i][j++];
+        
+       
+    }
+
+    bool hasNext() {
+       forward();
+       return i<vec.size();
+    }
+};
 1257,Smallest Common Region,58.8%,Medium,0.2561688067457042, https://leetcode.com/problems/smallest-common-region
+class Solution {
+public:
+    string findSmallestRegion(vector<vector<string>>& regions, string region1, string region2) {
+        unordered_map<string, string> m;
+        for (auto& region : regions)
+            for (int i = 1; i < region.size(); ++i)
+                m[region[i]] = region[0];
+        unordered_set<string> s;
+        while (m.count(region1)) {
+            s.insert(region1);
+            region1 = m[region1];
+        }
+        while (m.count(region2)) {
+            if (s.count(region2)) return region2;
+            region2 = m[region2];
+        }
+        return region1;
+    }
+};
 68,Text Justification,27.7%,Hard,0.16143214434637243, https://leetcode.com/problems/text-justification
 1235,Maximum Profit in Job Scheduling,44.0%,Hard,0.1532629744871177, https://leetcode.com/problems/maximum-profit-in-job-scheduling
 39,Combination Sum,56.1%,Medium,0.1339254107186325, https://leetcode.com/problems/combination-sum
+class Solution {
+public:
+     void solve(vector<int>& nums,int target,vector<vector<int>>& ans,vector<int>& res,int i){
+        if(target==0){
+            ans.push_back(res);
+        }
+        while(i<nums.size() && target-nums[i]>=0){
+            res.push_back(nums[i]);
+            solve(nums,target-nums[i],ans,res,i);
+            i++;
+            res.pop_back();
+        }
+
+     }
+    vector<vector<int>> combinationSum(vector<int>& nums, int target) {
+        vector<vector<int>> ans;
+        vector<int> res;
+        int n=nums.size();
+        sort(nums.begin(),nums.end());
+        solve(nums,target,ans,res,0);
+        return ans;
+        
+        
+    }
+};
 324,Wiggle Sort II,29.9%,Medium,0.11122563511022437, https://leetcode.com/problems/wiggle-sort-ii
+class Solution {
+public:
+    void wiggleSort(vector<int>& nums) {
+       sort(nums.begin(),nums.end());
+       int i=1;
+       int j=nums.size()-1;
+       int temp[nums.size()];
+       while(i<nums.size()){
+        temp[i]=nums[j];
+        i+=2;
+        j--;
+        
+       }
+        i=0;
+       while(i<nums.size()){
+        temp[i]=nums[j];
+        i+=2;
+        j--;
+       }
+       for(int i=0; i<nums.size();i++){
+        nums[i]=temp[i];
+       }
+
+    }
+};
 759,Employee Free Time,66.2%,Hard,0.10623186692973738, https://leetcode.com/problems/employee-free-time
+First, use a list to store all the intervals in schedule, and merge the overlapping intervals. This is done by first sorting the intervals in the list according to the start points in ascending order, then update the current interval’s end time once an overlapping interval is met, and add the merged intervals to a new list.
+
+Next, loop over the new list that contains merged intervals, which are sorted. For each pair of adjacent intervals, use the first interval’s end time and the second interval’s start time to create an interval of free time and add the free time interval to the result list. Finally, return the result list.
+class Solution {
+public:
+    vector<Interval> employeeFreeTime(vector<vector<Interval>> A) {
+        map<int, int> m;
+        for (auto &v : A) {
+            for (auto &it : v) {
+                m[it.start]++;
+                m[it.end]--;
+            }
+        }
+        vector<Interval> ans;
+        int cnt = 0;
+        for (auto it = m.begin(); it != m.end(); ++it) {
+            cnt += it->second;
+            if (cnt) continue;
+            int start = it->first;
+            ++it;
+            if (it == m.end()) break;
+            cnt += it->second;
+            ans.emplace_back(start, it->first);
+        }
+        return ans;
+    }
+};
 280,Wiggle Sort,63.8%,Medium,0.04362742017962607, https://leetcode.com/problems/wiggle-sort
+same logic of wiggle sort 2
 322,Coin Change,35.5%,Medium,0.024924029676386045, https://leetcode.com/problems/coin-change
+this is standered dp question
 341,Flatten Nested List Iterator,52.9%,Medium,0.019980684690483426, https://leetcode.com/problems/flatten-nested-list-iterator
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+// Assuming NestedInteger interface is already defined as in the prompt
+
+public class NestedIterator implements Iterator<Integer> {
+    private List<Integer> flattenList;
+    private int current;
+
+    public NestedIterator(List<NestedInteger> nestedList) {
+        flattenList = new ArrayList<>();
+        current = 0;
+        for (NestedInteger nestedInteger : nestedList) {
+            helper(nestedInteger);
+        }
+    }
+
+    @Override
+    public Integer next() {
+        return flattenList.get(current++);
+    }
+
+    @Override
+    public boolean hasNext() {
+        return current < flattenList.size();
+    }
+
+    private void helper(NestedInteger nestedInteger) {
+        if (nestedInteger.isInteger()) {
+            flattenList.add(nestedInteger.getInteger());
+        } else {
+            for (NestedInteger integer : nestedInteger.getList()) {
+                helper(integer);
+            }
+        }
+    }
+}
+
+/**
+ * Your NestedIterator object will be instantiated and called as such:
+ * NestedIterator i = new NestedIterator(nestedList);
+ * while (i.hasNext()) v[f()] = i.next();
+ */
+
 236,Lowest Common Ancestor of a Binary Tree,45.7%,Medium,0.004714210262726446, https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(root==nullptr) return nullptr;
+        if(root==p || root==q) return root;
+        TreeNode* left=lowestCommonAncestor(root->left,p,q);
+        TreeNode* right=lowestCommonAncestor(root->right,p,q);
+        if(left==nullptr) return right;
+        if(right==nullptr) return left;
+        return root;
+    }
+};
 42,Trapping Rain Water,48.9%,Hard,0.004350670338744988, https://leetcode.com/problems/trapping-rain-water
+class Solution {
+public:
+ 
+    int trap(vector<int>& nums) {
+      int n=nums.size();
+      int prefix[n];
+      int sufix[n];
+      prefix[0]=nums[0];
+      for(int i=1; i<n; i++){
+        prefix[i]=max(prefix[i-1],nums[i]);
+      }
+      sufix[n-1]=nums[n-1];
+      for(int i=n-2; i>=0 ; i--){
+        sufix[i]=max(sufix[i+1],nums[i]);
+      }
+      int waterContain=0;
+      for(int i=0; i<n; i++){
+        waterContain+=(min(prefix[i],sufix[i])-nums[i]);
+      }
+      return waterContain;
+    
+    }
+};
+// 0 1 0 2 1 0 1 3 2 1 2 1 
+// left right 
+// min(left,right) 
