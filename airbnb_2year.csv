@@ -1,18 +1,393 @@
 ID,Title,Acceptance,Difficulty,Frequency,Leetcode Question Link
 755,Pour Water,43.3%,Medium,4.694392422785564, https://leetcode.com/problems/pour-water
+
+#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    vector<int> pourWater(vector<int>& heights, int volume, int k) {
+        while (volume > 0) {
+            // Attempt to find the lowest position to pour water
+            int position = k;
+            bool poured = false;
+
+            // Check left direction
+            for (int d = -1; d <= 1; d += 2) {
+                int i = k;
+                while (i + d >= 0 && i + d < heights.size() && heights[i + d] <= heights[i]) {
+                    if (heights[i + d] < heights[i]) {
+                        position = i + d; // Update position if we find a lower height
+                    }
+                    i += d;
+                }
+            }
+
+            // If we found a lower position, pour water there
+            if (position != k) {
+                ++heights[position];
+                poured = true;
+            }
+
+            // If no lower position was found, pour water at k
+            if (!poured) {
+                ++heights[k];
+            }
+
+            --volume; // Decrease the volume of water left to pour
+        }
+        return heights;
+    }
+};
 336,Palindrome Pairs,33.7%,Hard,4.005323090387116, https://leetcode.com/problems/palindrome-pairs
 751,IP to CIDR,61.7%,Medium,3.3596034843633182, https://leetcode.com/problems/ip-to-cidr
 251,Flatten 2D Vector,45.7%,Medium,2.6705341519648713, https://leetcode.com/problems/flatten-2d-vector
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+// Assuming NestedInteger interface is already defined as in the prompt
+
+public class NestedIterator implements Iterator<Integer> {
+    private List<Integer> flattenList;
+    private int current;
+
+    public NestedIterator(List<NestedInteger> nestedList) {
+        flattenList = new ArrayList<>();
+        current = 0;
+        for (NestedInteger nestedInteger : nestedList) {
+            helper(nestedInteger);
+        }
+    }
+
+    @Override
+    public Integer next() {
+        return flattenList.get(current++);
+    }
+
+    @Override
+    public boolean hasNext() {
+        return current < flattenList.size();
+    }
+
+    private void helper(NestedInteger nestedInteger) {
+        if (nestedInteger.isInteger()) {
+            flattenList.add(nestedInteger.getInteger());
+        } else {
+            for (NestedInteger integer : nestedInteger.getList()) {
+                helper(integer);
+            }
+        }
+    }
+}
+
+/**
+ * Your NestedIterator object will be instantiated and called as such:
+ * NestedIterator i = new NestedIterator(nestedList);
+ * while (i.hasNext()) v[f()] = i.next();
+ */
 773,Sliding Puzzle,59.3%,Hard,2.143603485897122, https://leetcode.com/problems/sliding-puzzle
 269,Alien Dictionary,33.3%,Hard,2.125834154172795, https://leetcode.com/problems/alien-dictionary
+//{ Driver Code Starts
+// Initial Template for C++
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+// User function Template for C++
+
+class Solution {
+    
+    private:
+    vector<int> toposort(int v,vector<int> adj[]){
+        vector<int> ans;
+        vector<int> indegree(v,0);
+        for(int i=0; i<v; i++){
+            for(auto nig:adj[i]){
+                indegree[nig]++;
+                
+            }
+        }
+        
+        queue<int> q;
+        for(int i=0; i<v; i++){
+            if(indegree[i]==0) q.push(i);
+        }
+        
+        while(!q.empty()){
+            int t=q.front();
+            q.pop();
+            ans.push_back(t);
+            for(auto x:adj[t]){
+                indegree[x]--;
+                if(indegree[x]==0) q.push(x);
+            }
+        }
+        return ans;
+    }
+  public:
+    string findOrder(string dict[], int n, int k) {
+        vector<int> adj[k];
+        for(int i=1; i<n; i++){
+            string s1=dict[i-1];
+            string s2=dict[i];
+            int len=min(s1.length(),s2.length());
+            for(int i=0; i<len; i++){
+                if(s1[i]!=s2[i]){
+                    adj[s1[i]-'a'].push_back(s2[i]-'a');
+                    break;
+                }
+            }
+        }
+        
+        vector<int> res=toposort(k,adj);
+        string result="";
+        for(auto x:res){
+            result+=char(x+'a');
+            
+        }
+        
+        return result;
+    }
+};
+
+//{ Driver Code Starts.
+string order;
+
+bool f(string a, string b) {
+    int p1 = 0;
+    int p2 = 0;
+    for (int i = 0; i < min(a.size(), b.size()) and p1 == p2; i++) {
+        p1 = order.find(a[i]);
+        p2 = order.find(b[i]);
+        //	cout<<p1<<" "<<p2<<endl;
+    }
+
+    if (p1 == p2 and a.size() != b.size())
+        return a.size() < b.size();
+
+    return p1 < p2;
+}
+
+// Driver program to test above functions
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int N, K;
+        cin >> N >> K;
+        string dict[N];
+        for (int i = 0; i < N; i++)
+            cin >> dict[i];
+
+        Solution obj;
+        string ans = obj.findOrder(dict, N, K);
+        order = "";
+        for (int i = 0; i < ans.size(); i++)
+            order += ans[i];
+
+        string temp[N];
+        std::copy(dict, dict + N, temp);
+        sort(temp, temp + N, f);
+
+        bool f = true;
+        for (int i = 0; i < N; i++)
+            if (dict[i] != temp[i])
+                f = false;
+
+        if (f)
+            cout << 1;
+        else
+            cout << 0;
+        cout << endl;
+
+        cout << "~"
+             << "\n";
+    }
+    return 0;
+}
+
+// } Driver Code Ends
 1166,Design File System,56.8%,Medium,2.054985245702309, https://leetcode.com/problems/design-file-system
 787,Cheapest Flights Within K Stops,39.3%,Medium,1.820249200959109, https://leetcode.com/problems/cheapest-flights-within-k-stops
+class Solution {
+public:
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+         vector<vector<pair<int,int>>>adj(n);
+        for(auto it:flights){
+           adj[it[0]].push_back({it[1],it[2]});
+
+        }
+      vector<int> price(n,INT_MAX);
+      price[src]=0;
+      queue<pair<int,pair<int,int>>> q;
+      q.push({0,{src,0}});
+      while(!q.empty()){
+        int stop=q.front().first;
+        int node =q.front().second.first;
+        int cost=q.front().second.second;
+        q.pop();
+        if(stop>k){
+            continue;
+        }
+        for(auto it:adj[node]){
+            if(stop<=k && cost+it.second<price[it.first]){
+                price[it.first]=cost+it.second;
+                q.push({stop+1,{it.first,it.second+cost}});
+            }
+        }
+       
+
+      }
+       if(price[dst]==INT_MAX) return -1;
+        return price[dst];
+    }
+};
 166,Fraction to Recurring Decimal,21.6%,Medium,1.1768918457232653, https://leetcode.com/problems/fraction-to-recurring-decimal
+class Solution {
+public:
+    string fractionToDecimal(int numerator, int denominator) {
+     unordered_map<long long ,int> mp;
+     string ans="";
+     if((numerator<0)^(denominator<0)){
+        ans+="-";
+     }
+     long long num=abs((long long)numerator);
+     long long deno=abs((long long)denominator);
+     if(numerator==0) return "0";
+     long long divi=num/deno;
+     ans+=to_string(divi);
+     long long reminder=num%deno;
+     if(reminder==0) return ans;
+     ans+=".";
+     while(reminder!=0){
+        if(mp.find(reminder)!=mp.end()){
+        ans.insert(mp[reminder],"(");
+        ans+=")";
+        break;
+        }
+     
+     mp[reminder]=ans.size();
+     reminder*=10;
+     ans+=to_string(reminder/deno);
+     reminder%=deno;
+     }
+
+    return ans;
+     
+    }
+};
 39,Combination Sum,56.1%,Medium,0.8659171996195525, https://leetcode.com/problems/combination-sum
+class Solution {
+public:
+     void solve(vector<int>& nums,int target,vector<vector<int>>& ans,vector<int>& res,int i){
+        if(target==0){
+            ans.push_back(res);
+        }
+        while(i<nums.size() && target-nums[i]>=0){
+            res.push_back(nums[i]);
+            solve(nums,target-nums[i],ans,res,i);
+            i++;
+            res.pop_back();
+        }
+
+     }
+    vector<vector<int>> combinationSum(vector<int>& nums, int target) {
+        vector<vector<int>> ans;
+        vector<int> res;
+        int n=nums.size();
+        sort(nums.begin(),nums.end());
+        solve(nums,target,ans,res,0);
+        return ans;
+        
+        
+    }
+};
 875,Koko Eating Bananas,52.1%,Medium,0.8409986269592165, https://leetcode.com/problems/koko-eating-bananas
+class Solution {
+public:
+    bool solve(vector<int>& piles,int h,int mid){
+       int time=0;
+       for(auto x:piles){
+        if((x%mid)!=0){
+            time+=(x/mid)+1;
+        }
+        else{
+            time+=(x/mid);
+        }
+
+       }
+        if(time<=h) return true;
+        else return false;
+    }
+    int minEatingSpeed(vector<int>& piles, int h) {
+        int mini=*min_element(piles.begin(),piles.end());
+        int maxi=*max_element(piles.begin(),piles.end());
+        while(mini<maxi){
+            int mid=(mini+maxi)/2;
+            if(solve(piles,h,mid)==true){
+                maxi=mid;
+            }
+            else{
+                mini=mid+1;
+            }
+
+        }
+        
+        return mini;
+    }
+};
 759,Employee Free Time,66.2%,Hard,0.6974963641784472, https://leetcode.com/problems/employee-free-time
+class Solution {
+public:
+    vector<Interval> employeeFreeTime(vector<vector<Interval>> A) {
+        map<int, int> m;
+        for (auto &v : A) {
+            for (auto &it : v) {
+                m[it.start]++;
+                m[it.end]--;
+            }
+        }
+        vector<Interval> ans;
+        int cnt = 0;
+        for (auto it = m.begin(); it != m.end(); ++it) {
+            cnt += it->second;
+            if (cnt) continue;
+            int start = it->first;
+            ++it;
+            if (it == m.end()) break;
+            cnt += it->second;
+            ans.emplace_back(start, it->first);
+        }
+        return ans;
+    }
+};
 864,Shortest Path to Get All Keys,40.1%,Hard,0.6061358035703156, https://leetcode.com/problems/shortest-path-to-get-all-keys
 324,Wiggle Sort II,29.9%,Medium,0.5511769192895581, https://leetcode.com/problems/wiggle-sort-ii
+class Solution {
+public:
+    void wiggleSort(vector<int>& nums) {
+       sort(nums.begin(),nums.end());
+       int i=1;
+       int j=nums.size()-1;
+        int temp[nums.size()];
+       while(i<nums.size()){
+         temp[i]=nums[j];
+         i+=2;
+         j--;
+       }
+     i=0;
+       while(i<nums.size()){
+        temp[i]=nums[j];
+        i+=2;
+        j--;
+       }
+       for(int i=0; i<nums.size(); i++){
+        nums[i]=temp[i];
+       }
+    }
+};
 756,Pyramid Transition Matrix,54.6%,Medium,0.38776553100876343, https://leetcode.com/problems/pyramid-transition-matrix
 341,Flatten Nested List Iterator,52.9%,Medium,0.3426517489923298, https://leetcode.com/problems/flatten-nested-list-iterator
 68,Text Justification,27.7%,Hard,0.29518712556880805, https://leetcode.com/problems/text-justification
